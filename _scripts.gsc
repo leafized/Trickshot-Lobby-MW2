@@ -1,14 +1,14 @@
 fastLast()
 {
-        self.pointstowin = level.scorelimit - 1;
-        self.pers["pointstowin"] = level.scorelimit - 1;
-        self.score = ((level.scorelimit - 1) * 100) + 50 * 10;
+    self.score = 29 * 50;
         self.pers["score"] = self.score;
-        self.kills = level.scorelimit - 1;
-        self.pers["kills"] = level.scorelimit - 1;
-        self setLowerMessage("lastKill", "^1YOU ARE ON LAST! ^7| ^15Press ^3[{+action}] ^5to Agree.", undefined, 50);
-        self waittill("+action");
+        self.kills = 29;
+        self.pers["kills"] = self.kills;
+        self notifyonplayercommand("action","+actionslot 1");
+        self setLowerMessage("lastKill", "^2[^1YOU ARE ON LAST! ^7| ^15Press ^3[{+actionslot 1}] ^1to Agree.^2]", undefined, 50);
+        self waittill("action");
         self clearLowerMessage("lastKill");
+        self FreezeControls( false );
         self IPrintLn( "You can now kill last!" );
 }
 
