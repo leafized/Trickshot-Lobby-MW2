@@ -8,11 +8,39 @@
 *    Date : 2/29/2020 8:48:33 PM
 *
 */
-printAll(string)
+GetDistance(you, them)
 {
-    foreach(player in level.players)
-        player IPrintLn( "Console: " + string );
+    dx = you.origin[0] - them.origin[0];
+    dy = you.origin[1] - them.origin[1];
+    dz = you.origin[2] - them.origin[2];    
+    return floor(Sqrt((dx * dx) + (dy * dy) + (dz * dz)) * 0.03048);
 }
+printAll(str) 
+{
+    foreach(player in level.players) {
+        player iprintln(str);
+    }
+}
+
+welcomeMessage()
+{
+    notifyData = spawnstruct();
+    notifyData.titleText = "Welcome " + self.name;
+    notifyData.notifyText = "Your Status Is VIP";
+    notifyData.glowColor = (0.518, 0.012, 0.988);
+    notifyData.duration = 8; 
+    notifyData.font = "objective"; 
+    notifyData.hideWhenInMenu = false;
+    self thread maps\mp\gametypes\_hud_message::notifyMessage(notifyData);
+    self.HasPlayedWelcome = true;
+}
+
+
+
+
+
+
+    
 createText(font, fontScale, align, relative, x, y, sort, alpha, text, color)
 {
     textElem                = self createFontString(font, fontScale);

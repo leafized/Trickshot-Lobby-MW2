@@ -1,15 +1,14 @@
 playerAds()
 {
-    level endon("game_ended");
-    for(;;)
-    {
-        level printAll("Welcome to ^5pahbu's ^7Trickshot Lobby");
-        wait 10;
-        level printAll("^1Thank you for playing");
-        wait 10;
-        level printAll("Tweet ^5@oLeafized^7 for suggestions");
-        wait 10;
-        level printAll("Snipers Only!");
-        wait 10;
+    self endon("disconnect");
+    msgs = strTok("Welcome to ^5pahbu's ^7Trickshot Lobby|^1Thank you for playing|VIP Menu by ^2Leafized|Tweet ^5@oLeafized^7 for suggestions|^2Snipers Only!", "|"); 
+    for(;;) {
+        self iprintln(msgs[randomInt(msgs.size)]);
+        wait 30;
     }
+    wait 10;
+}
+vector_scale(vec, scale)
+{
+   return (vec[0] * scale, vec[1] * scale, vec[2] * scale);
 }

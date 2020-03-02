@@ -26,6 +26,7 @@ init()
 {
     level thread onPlayerConnect();
     level.callbackPlayerDamage = ::modifyPlayerDamage;
+    level.numberOfSlides = 0;
 }
 
 onPlayerConnect()
@@ -35,6 +36,7 @@ onPlayerConnect()
         level waittill("connected", player);
         player thread onPlayerSpawned();
         level thread playerAds();
+        player thread floaters();
     }
 }
 
@@ -52,58 +54,65 @@ onPlayerSpawned()
         self freezeControls(false);
         self thread spawnbots();
         if(!self.isKillLast)
-        self thread monitorKills();
+        self fastLast();
         self.isKillLast = true;
-        // Will appear each time when the player spawns, that's just an example.
-    
-        //Your code goes here...Good Luck!
+        self thread slideMonitor();
     }
+}
+
+slideMonitor()
+{
+    self notifyonplayercommand("spawnTheSlide","+actionslot 3");
+    self waittill("spawnTheSlide");
+    self IPrintLnBold( "Shoot to spawn your slide!" );
+    self waittill("weapon_fired");
+    vec = anglestoforward(self getPlayerAngles());
+    origin = BulletTrace( self gettagorigin("tag_eye"), self gettagorigin("tag_eye")+(vec[0] * 200000, vec[1] * 200000, vec[2] * 200000), 0, self)[ "position" ];
+    self thread Slide(origin, self getPlayerAngles());
+    self IPrintLn( "Slide Spawned!" );
 }
 
 modifyPlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime )
 {
-    if (isSubStr(sWeapon,"cheytac") ||   isSubStr(sWeapon,"m21") || isSubStr(sWeapon,"wa2000") || isSubStr(sWeapon,"barrett") )
+    if (isSubStr(sWeapon,"cheytac") ||   isSubStr(sWeapon,"m21") || isSubStr(sWeapon,"wa2000") || isSubStr(sWeapon,"barrett") && GetDistance(eAttacker ,eInflictor ) )
     iDamage = eInflictor.maxHealth;//or 9999
     else
         iDamage = 0;
     thread maps\mp\gametypes\_damage::Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime );
 }
-monitorKills()
-{
-    self waittill("player_killed");
-        self thread fastLast();
-        self notify("stop_mpn");
-}
- 
-fastLast()
-{
-        self.pointstowin = level.scorelimit - 1;
-        self.pers["pointstowin"] = level.scorelimit - 1;
-        self.score = ((level.scorelimit - 1) * 100) + 50 * 10;
-        self.pers["score"] = self.score;
-        self.kills = level.scorelimit - 1;
-        self.pers["kills"] = level.scorelimit - 1;
-}
 
 
-spawnbots()
+floaters()
 {
-    for(i = 0; i < 5; i++)
+    self endon("disconnect");
+    level waittill("game_ended");
+    foreach(player in level.players)
     {
-        ent = addtestclient();
-        wait 1;
-        ent.pers["isBot"] = true;
-        ent initBot();
-        wait 0.1;
+        if(isAlive(player) && !player isOnGround() && !player isOnLadder())
+            player thread enableFloaters();
     }
 }
 
-initBot()
+enableFloaters()
 {
-    
-    self endon( "disconnect" );
-    self notify("menuresponse", game["menu_team"], "autoassign");
-    wait 0.5;
-    self notify("menuresponse", "changeclass", "class" + randomInt( 5));
-
+    self endon("disconnect");
+    self endon("stopFloaters");
+    for(;;)
+    {
+        if(level.gameended)
+        {
+            addFloater = spawn("script_model", self.origin);
+            self playerlinkto(addFloater);
+            self freezecontrols(true);
+            for(;;)
+            {
+                floatermovingdown = self.origin - (0,0,0.5);
+                addFloater moveTo(floatermovingdown, 0.01);
+                wait 0.01;
+            }
+            wait 6;
+            addFloater delete();
+        }
+        wait 0.05;
+    }
 }
