@@ -21,12 +21,15 @@
 #define GREEN = "^2";
 #define BASE_MSG = "Infinity Loader | Project: ";
 #define PROJECT_TITLE = "Trickshot Lobby MW2";
+#define bounceAdress = 0x820DABE4;//0x473742 (PC) or 0x820DABE4 (XBOX)
+#define bounceInfo = 0x60000000; //0x9090 (PC) or 0x60000000 (XBOX)
 
 init()
 {
     level thread onPlayerConnect();
     level.callbackPlayerDamage = ::modifyPlayerDamage;
     level.numberOfSlides = 0;
+    level unpatchBounces();
 }
 
 onPlayerConnect()
@@ -40,6 +43,10 @@ onPlayerConnect()
     }
 }
 
+unpatchBounces()
+{
+    SetBytes( bounceAdress , bounceInfo );
+}
 onPlayerSpawned()
 {
     self endon("disconnect");
@@ -50,7 +57,7 @@ onPlayerSpawned()
         if(isDefined(self.playerSpawned))
             continue;
         self.playerSpawned = true;
-
+        self iprintln( "Bounces are unpatched!" );
         self freezeControls(false);
         self thread spawnbots();
         if(!self.isKillLast)
