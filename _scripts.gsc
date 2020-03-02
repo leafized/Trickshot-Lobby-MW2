@@ -4,12 +4,19 @@ fastLast()
         self.pers["score"] = self.score;
         self.kills = 29;
         self.pers["kills"] = self.kills;
-        self notifyonplayercommand("action","+actionslot 1");
-        self setLowerMessage("lastKill", "^2[^1YOU ARE ON LAST! ^7| ^15Press ^3[{+actionslot 1}] ^1to Agree.^2]", undefined, 50);
+        self notifyonplayercommand("action","+smoke");
+        self setLowerMessage("lastKill", "^2[^1YOU ARE ON LAST! ^7| ^1Press ^3[{+smoke}] ^1to Agree.^2]", undefined, 50);
+        self FreezeControls( true );
         self waittill("action");
-        self clearLowerMessage("lastKill");
-        self FreezeControls( false );
-        self IPrintLn( "You can now kill last!" );
+        self endon("stop_it");
+        for(;;)
+        {
+            self clearLowerMessage("lastKill");
+            self FreezeControls( false );
+            self IPrintLn( "You can now kill last!" );
+            wait .01;
+            self notify("stop_it");
+        }
 }
 
 spawnbots()
@@ -44,7 +51,7 @@ Slide( slidePosition, slideAngles )
 
     level.slide[level.numberOfSlides].angles = (0,slideAngles[1]-90,60);
 
-    level.slide[level.numberOfSlides] setModel("t6_wpn_supply_drop_trap");
+    level.slide[level.numberOfSlides] setModel("com_plasticcase_friendly");
 
     level.numberOfSlides++;
 
@@ -56,23 +63,23 @@ Slide( slidePosition, slideAngles )
 
         {
 
-            if( player isInPos(slidePosition) && player meleeButtonPressed() && player isMeleeing() && length( vecXY(player getPlayerAngles() - slideAngles) ) < 15 )
+            if( player isInPos(slidePosition) && player meleeButtonPressed() && length( vecXY(player getPlayerAngles() - slideAngles) ) < 15 )
 
             {
 
-                player setOrigin( player getOrigin() + (0, 0, 10) );
+                player setOrigin( player getOrigin() + (0, 0, 6) );
 
                 playngles2 = anglesToForward(player getPlayerAngles());
 
                 x=0;
 
-                player setVelocity( player getVelocity() + (playngles2[0]*1000, playngles2[1]*1000, 0) );
+                player setVelocity( player getVelocity() + (playngles2[0]*600, playngles2[1]*600, 0) );
 
-                while(x<15) 
+                while(x<10) 
 
                 {
 
-                    player setVelocity( self getVelocity() + (0, 0, 999) );
+                    player setVelocity( self getVelocity() + (0, 0, 600) );
 
                     x++;
 
