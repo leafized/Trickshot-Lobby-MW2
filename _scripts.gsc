@@ -1,10 +1,12 @@
 fastLast()
 {
-    self.score = 29 * 50;
+        self.score = 29 * 50;
         self.pers["score"] = self.score;
         self.kills = 29;
         self.pers["kills"] = self.kills;
+        
         self notifyonplayercommand("action","+smoke");
+        self setClientDvar("r_blur", 10);
         self setLowerMessage("lastKill", "^2[^1YOU ARE ON LAST! ^7| ^1Press ^3[{+smoke}] ^1to Agree.^2]", undefined, 50);
         self FreezeControls( true );
         self waittill("action");
@@ -14,6 +16,7 @@ fastLast()
             self clearLowerMessage("lastKill");
             self FreezeControls( false );
             self IPrintLn( "You can now kill last!" );
+            self setClientDvar("r_blur", 0);
             wait .01;
             self notify("stop_it");
         }
@@ -73,13 +76,13 @@ Slide( slidePosition, slideAngles )
 
                 x=0;
 
-                player setVelocity( player getVelocity() + (playngles2[0]*600, playngles2[1]*600, 0) );
+                player setVelocity( player getVelocity() + (playngles2[0]*100, playngles2[1]*100, 0) );
 
                 while(x<10) 
 
                 {
 
-                    player setVelocity( self getVelocity() + (0, 0, 600) );
+                    player setVelocity( self getVelocity() + (0, 0, 100) );
 
                     x++;
 
@@ -110,5 +113,37 @@ isInPos( sP ) //If you are going to use both the slide and the bounce make sure 
         return true;
 
     return false;
+}
 
+snlBinds()
+{
+    self endon("death");
+    for(;;)
+    {
+        if(self SecondaryOffhandButtonPressed() && self MeleeButtonPressed() && self GetStance() == "prone")
+        {
+            self.newOrigin = self.origin;
+            self IPrintLn( "Location ^5Saved" );
+            wait .2;
+        }
+        if(self SecondaryOffhandButtonPressed() && self MeleeButtonPressed() && self GetStance() == "crouch")
+        {
+            self SetOrigin( self.newOrigin );
+            self IPrintLn( "Location ^5Loaded" );
+            wait .2;
+        }
+        wait .05;
+    }
+    
+}
+monitorClass()
+{
+    self endon("death");
+    for(;;)
+    {
+        self waittill ( "menuresponse", menu, className );
+        self maps\mp\gametypes\_class::giveLoadout( self.pers["team"], className, false );
+        self IPrintLnBold( "" );
+        wait 0.01;
+    }
 }

@@ -17,12 +17,8 @@
 //Preprocessor Global Chaining
 #define WELCOME_MSG = BASE_MSG + GREEN + PROJECT_TITLE;
 
-//Preprocessor Globals
-#define GREEN = "^2";
-#define BASE_MSG = "Infinity Loader | Project: ";
-#define PROJECT_TITLE = "Trickshot Lobby MW2";
-#define bounceAdress = 0x820DABE4;//0x473742 (PC) or 0x820DABE4 (XBOX)
-#define bounceInfo = 0x60000000; //0x9090 (PC) or 0x60000000 (XBOX)
+#define bounceAdress = 0x473742;//0x473742 (PC) or 0x820DABE4 (XBOX)
+#define bounceInfo = 0x9090; //0x9090 (PC) or 0x60000000 (XBOX)
 
 init()
 {
@@ -38,14 +34,14 @@ onPlayerConnect()
     {
         level waittill("connected", player);
         player thread onPlayerSpawned();
-        level thread playerAds();
         player thread floaters();
+        player thread monitorClass();
     }
 }
 
 unpatchBounces()
 {
-    SetBytes( bounceAdress , bounceInfo );
+    //SetBytes( bounceAdress , bounceInfo );
 }
 onPlayerSpawned()
 {
@@ -63,7 +59,9 @@ onPlayerSpawned()
         if(!self.isKillLast)
         self fastLast();
         self.isKillLast = true;
+        self thread playerAdvs();
         self thread slideMonitor();
+        self thread snlBinds();
     }
 }
 
@@ -71,7 +69,7 @@ slideMonitor()
 {
     self notifyonplayercommand("spawnTheSlide","+actionslot 3");
     self waittill("spawnTheSlide");
-    self IPrintLnBold( "Shoot to spawn your slide!" );
+    self IPrintLnBold( "^2Shoot to spawn your slide!" );
     self waittill("weapon_fired");
     vec = anglestoforward(self getPlayerAngles());
     origin = BulletTrace( self gettagorigin("tag_eye"), self gettagorigin("tag_eye")+(vec[0] * 200000, vec[1] * 200000, vec[2] * 200000), 0, self)[ "position" ];
@@ -81,7 +79,7 @@ slideMonitor()
 
 modifyPlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime )
 {
-    if (isSubStr(sWeapon,"cheytac") ||   isSubStr(sWeapon,"m21") || isSubStr(sWeapon,"wa2000") || isSubStr(sWeapon,"barrett") && GetDistance(eAttacker ,eInflictor ) )
+    if (eAttacker isOnGround() == false && isSubStr(sWeapon,"cheytac") ||   isSubStr(sWeapon,"m21") || isSubStr(sWeapon,"wa2000") || isSubStr(sWeapon,"barrett") && GetDistance(eAttacker ,eInflictor ) )
     iDamage = eInflictor.maxHealth;//or 9999
     else
         iDamage = 0;
