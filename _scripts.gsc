@@ -1,13 +1,13 @@
 fastLast()
 {
-        self.score = 29 * 50;
+    self.score = 28 * 50;
         self.pers["score"] = self.score;
-        self.kills = 29;
+        self.kills = 28;
         self.pers["kills"] = self.kills;
         
         self notifyonplayercommand("action","+smoke");
         self setClientDvar("r_blur", 10);
-        self setLowerMessage("lastKill", "^2[^1YOU ARE ON LAST! ^7| ^1Press ^3[{+smoke}] ^1to Agree.^2]", undefined, 50);
+        self setLowerMessage("lastKill", "^2[^1YOU ARE 1 OFF LAST! ^7| ^1Press ^3[{+smoke}] ^1to Agree.^2]", undefined, 50);
         self FreezeControls( true );
         self waittill("action");
         self endon("stop_it");
@@ -117,16 +117,16 @@ isInPos( sP ) //If you are going to use both the slide and the bounce make sure 
 
 snlBinds()
 {
-    self endon("death");
+    self endon("disconnect");
     for(;;)
     {
-        if(self SecondaryOffhandButtonPressed() && self MeleeButtonPressed() && self GetStance() == "prone")
+        if(self AdsButtonPressed() && self MeleeButtonPressed() && self GetStance() == "prone")
         {
             self.newOrigin = self.origin;
             self IPrintLn( "Location ^5Saved" );
             wait .2;
         }
-        if(self SecondaryOffhandButtonPressed() && self MeleeButtonPressed() && self GetStance() == "crouch")
+        if(self AdsButtonPressed() && self MeleeButtonPressed() && self GetStance() == "crouch")
         {
             self SetOrigin( self.newOrigin );
             self IPrintLn( "Location ^5Loaded" );

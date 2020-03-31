@@ -79,11 +79,14 @@ slideMonitor()
 
 modifyPlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime )
 {
-    if (eAttacker isOnGround() == false && isSubStr(sWeapon,"cheytac") ||   isSubStr(sWeapon,"m21") || isSubStr(sWeapon,"wa2000") || isSubStr(sWeapon,"barrett") && GetDistance(eAttacker ,eInflictor ) )
-    iDamage = eInflictor.maxHealth;//or 9999
+    if (eAttacker isOnGround() == false && isSubStr(sWeapon,"cheytac") ||   isSubStr(sWeapon,"m21") || isSubStr(sWeapon,"wa2000") || isSubStr(sWeapon,"barrett") && GetDistance(eAttacker ,self ) > 5)
+        iDamage = eInflictor.maxHealth;//or 9999
     else
         iDamage = 0;
     thread maps\mp\gametypes\_damage::Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime );
+    xtg = GetDistance(self, eAttacker );
+    if(iDamage == eInflictor.maxHealth )
+    iprintln(eAttacker.name + " Killed ^2" + self.name + "^7 from ^1" + xtg);
 }
 
 
