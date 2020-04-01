@@ -1,7 +1,7 @@
 playerAdvs()
 {
     self endon("death");
-    level.msgs = ["Welcome to ^5Leafized's ^7Trickshot Lobby","^1Thank you for playing","Prone / Crouch + [{+melee}] + [{+smoke}] to Save / Load Location.","Tweet ^5@oLeafized^7 for suggestions","^2Snipers Only!","Download at ^4http://infinityloader.com"]; 
+    level.msgs = ["Welcome to ^5Leafized's ^7Trickshot Lobby","Credits to ^1Liam ^7for getDistance, Floaters.","^1Thank you for playing","Prone / Crouch + [{+melee}] + [{+smoke}] to Save / Load Location.","Tweet ^5@oLeafized^7 for suggestions","^2Snipers Only!","Download at ^4http://infinityloader.com"]; 
     for(;;) 
     {
         self iprintln(level.msgs[randomInt(level.msgs.size)]);
